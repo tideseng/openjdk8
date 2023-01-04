@@ -36,7 +36,7 @@ import java.util.*;
  * Base Selector implementation class.
  */
 
-public abstract class SelectorImpl
+public abstract class SelectorImpl // Windows系统的子类为WindowsSelectorImpl、Linux系统的子类为EPollSelectorImpl
     extends AbstractSelector
 {
 
@@ -50,7 +50,7 @@ public abstract class SelectorImpl
     private Set<SelectionKey> publicKeys;             // Immutable
     private Set<SelectionKey> publicSelectedKeys;     // Removal allowed, but not addition
 
-    protected SelectorImpl(SelectorProvider sp) {
+    protected SelectorImpl(SelectorProvider sp) { // 创建SelectorImpl
         super(sp);
         keys = new HashSet<SelectionKey>();
         selectedKeys = new HashSet<SelectionKey>();
@@ -83,13 +83,13 @@ public abstract class SelectorImpl
                 throw new ClosedSelectorException();
             synchronized (publicKeys) {
                 synchronized (publicSelectedKeys) {
-                    return doSelect(timeout);
+                    return doSelect(timeout); // 抽象方法，由子类实现，Windows系统的子类为WindowsSelectorImpl、Linux系统的子类为EPollSelectorImpl
                 }
             }
         }
     }
 
-    public int select(long timeout)
+    public int select(long timeout) // 定时阻塞
         throws IOException
     {
         if (timeout < 0)
@@ -97,7 +97,7 @@ public abstract class SelectorImpl
         return lockAndDoSelect((timeout == 0) ? -1 : timeout);
     }
 
-    public int select() throws IOException {
+    public int select() throws IOException { // 一直阻塞
         return select(0);
     }
 
